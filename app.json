@@ -34,11 +34,19 @@
             "imageWidth": 76
           }
         }
-      ]
+      ],
+      "expo-audio"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6bc2c16a-f81a-422a-ae64-cefebe677287"
+      }
+    },
+    "owner": "syedshaon99"
   }
 }
