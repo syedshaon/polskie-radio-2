@@ -48,6 +48,7 @@ export default function App() {
       try {
         await setAudioModeAsync({
           playsInSilentMode: true,
+          shouldPlayInBackground: true,
           interruptionMode: "doNotMix", // Prevents Android system termination hooks
           allowsRecording: false,
         });
