@@ -1,13 +1,12 @@
-import { setAudioModeAsync, useAudioPlayer } from "expo-audio";
-
+import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import React, { useEffect, useState } from "react";
 import { Image, ImageBackground, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import TextTicker from "react-native-text-ticker";
 
 const STREAM_URL = "https://polskieradioscotlandstream.cloud/listen/polskie_radio_scotland_stream/radio.mp3";
 const METADATA_API_URL = "https://polskieradioscotlandstream.cloud/api/nowplaying/polskie_radio_scotland_stream";
-const logoImage = require("../assets/logo.png");
 
+const logoImage = require("../assets/logo.png");
 const Facebook = require("../assets/facebook.png");
 const Web = require("../assets/web.png");
 const Twitter = require("../assets/twitter.png");
@@ -18,6 +17,8 @@ const Pause = require("../assets/pause.png");
 
 export default function App() {
   const player = useAudioPlayer(STREAM_URL);
+  // Hook listener cleanly tracks dynamic audio streaming states (playing, buffering, etc.)
+  const status = useAudioPlayerStatus(player);
 
   const [trackInfo, setTrackInfo] = useState({
     title: "Live Stream",
@@ -32,7 +33,8 @@ export default function App() {
       if (data && data.now_playing && data.now_playing.song) {
         setTrackInfo({
           title: data.now_playing.song.title || "Live Stream",
-          artist: data.now_playing.song.artist ? `" — " ${data.now_playing.song.artist}` : "",
+          // Fixed syntax string formatting bug
+          artist: data.now_playing.song.artist ? ` — ${data.now_playing.song.artist}` : "Polskie Radio Scotland",
         });
       }
     } catch (error) {
@@ -40,43 +42,29 @@ export default function App() {
     }
   };
 
-  // useEffect(() => {
-  //   async function setupAudio() {
-  //     try {
-  //       await setAudioModeAsync({
-  //         playsInSilentMode: true,
-  //         interruptionMode: "doNotMix", // Required for Android lock screen integration
-  //         allowsRecording: false,
-  //         shouldPlayInBackground: true,
-  //       });
-  //     } catch (error) {
-  //       console.log("Error configuring Audio Mode:", error);
-  //     }
-  //   }
-  //   setupAudio();
-
-  //   fetchMetadata();
-
-  //   const interval = setInterval(fetchMetadata, 15000);
-  //   return () => clearInterval(interval);
-  // }, []);
-
-  // 2. Global Audio Session and Lock Screen binding config
+  // 1. Initialize Audio Sessions and Handle Polling Clock Intervals
   useEffect(() => {
     async function configureAudioSession() {
-      await setAudioModeAsync({
-        playsInSilentMode: true,
-        interruptionMode: "doNotMix", // Required on Android to tether lock screen control
-        allowsRecording: false,
-      });
+      try {
+        await setAudioModeAsync({
+          playsInSilentMode: true,
+          interruptionMode: "doNotMix", // Prevents Android system termination hooks
+          allowsRecording: false,
+        });
+      } catch (error) {
+        console.log("Error configuring Audio Mode:", error);
+      }
     }
     configureAudioSession();
+    fetchMetadata();
+
+    const interval = setInterval(fetchMetadata, 15000);
+    return () => clearInterval(interval);
   }, []);
 
+  // 2. Bind Active Runtime Stream States with OS Lockscreens
   useEffect(() => {
     if (player) {
-      // Tells Android/iOS that this stream is authorized to play in the background
-      // and binds it to the user's notification/lock-screen drawer.
       player.setActiveForLockScreen(true, {
         title: trackInfo.title,
         artist: trackInfo.artist,
@@ -88,13 +76,11 @@ export default function App() {
         player.clearLockScreenControls();
       }
     };
-  }, [player, trackInfo]);
+  }, [status.playing, trackInfo]);
 
-  const [isPlaying, setIsPlaying] = useState(false);
-
+  // 3. Playback State Callbacks
   const togglePlayPause = () => {
-    setIsPlaying((prev) => !prev);
-    if (player.playing) {
+    if (status.playing) {
       player.pause();
     } else {
       player.play();
@@ -111,12 +97,7 @@ export default function App() {
 
   return (
     <View style={styles.parentContainer}>
-      <ImageBackground
-        source={require("../assets/bg.jpg")}
-        // For local images use: source={require('./assets/bg.png')}
-        resizeMode="cover"
-        style={styles.mainBG}
-      >
+      <ImageBackground source={require("../assets/bg.jpg")} resizeMode="cover" style={styles.mainBG}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View style={styles.container}>
             {/* Top - Logo & Info */}
@@ -125,32 +106,26 @@ export default function App() {
               <Text style={styles.title}>Polskie Radio Scotland</Text>
             </View>
 
-            {/* Middle - Main Controls & Metadata (Moved Higher) */}
+            {/* Middle - Controls & Metadata */}
             <View style={styles.controls}>
-              {/* Metadata Display */}
               <View style={styles.metadataContainer}>
-                {player.playing ? (
+                {status.playing ? (
                   <TextTicker style={styles.songTitleText} duration={12000} loop bounce={false} repeatSpacer={100} marqueeDelay={1000}>
-                    {trackInfo.title}
+                    {trackInfo.title} {trackInfo.artist}
                   </TextTicker>
                 ) : (
-                  <Text style={styles.songTitleText}> </Text>
+                  <Text style={styles.songTitleText}>Stream Paused</Text>
                 )}
               </View>
 
               <TouchableOpacity onPress={togglePlayPause} activeOpacity={0.8}>
-                <ImageBackground
-                  source={require("../assets/play-bg.png")}
-                  // For local images use: source={require('./assets/bg.png')}
-                  resizeMode="cover"
-                  style={styles.playButtonBg}
-                >
+                <ImageBackground source={require("../assets/play-bg.png")} resizeMode="cover" style={styles.playButtonBg}>
                   <Image
-                    source={isPlaying ? Pause : Play}
+                    source={status.playing ? Pause : Play}
                     style={{
                       width: 60,
                       height: 60,
-                      marginLeft: isPlaying ? 0 : 6,
+                      marginLeft: status.playing ? 0 : 6,
                     }}
                     resizeMode="contain"
                   />
@@ -160,13 +135,9 @@ export default function App() {
 
             <Image source={require("../assets/tune.png")} style={{ width: 80, height: 80, marginTop: 20, marginHorizontal: "auto" }} resizeMode="contain" />
 
+            {/* Footer - Social Media Connections */}
             <View style={{ borderRadius: 20, overflow: "hidden", width: "100%", maxWidth: "100%", alignSelf: "center", marginBottom: 30 }}>
-              <ImageBackground
-                source={require("../assets/footer-bg.png")}
-                // For local images use: source={require('./assets/bg.png')}
-                resizeMode="cover"
-                style={styles.socialLinkBg}
-              >
+              <ImageBackground source={require("../assets/footer-bg.png")} resizeMode="cover" style={styles.socialLinkBg}>
                 <View style={styles.footer}>
                   <View style={styles.socialRow}>
                     {socialLinks.map(({ icon, label, url }) => (
@@ -186,62 +157,27 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  parentContainer: {
-    flex: 1,
-  },
-  safeArea: { flex: 1 },
+  parentContainer: { flex: 1 },
   container: { flex: 1 },
   mainBG: { flex: 1 },
-  image: {
-    flex: 1,
-    justifyContent: "center", // Centers children vertically
-    alignItems: "center", // Centers children horizontally
-  },
-
-  // Decreased header flex size from 2 to 1.5 to push things upward
   header: { flex: 1.5, justifyContent: "center", alignItems: "center", paddingTop: 40 },
   logo: { width: 180, height: 180, marginBottom: 10 },
   title: { color: "#fff", fontSize: 22, fontWeight: "600" },
   playButtonBg: { width: 120, height: 120, justifyContent: "center", alignItems: "center" },
-
-  // Kept flex 1.5 but layout will shift upwards due to overall flex changes
   controls: { flex: 1.5, justifyContent: "flex-start", alignItems: "center", paddingTop: 10 },
-
   metadataContainer: {
     alignItems: "center",
     marginBottom: 25,
-    width: "50%",
-    height: 30, // Fixed height prevents UI layout shifts when playing vs paused
+    width: "55%",
+    height: 30,
     paddingHorizontal: 10,
     overflow: "hidden",
     justifyContent: "center",
   },
-  songTitleText: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "600",
-    textAlign: "center",
-  },
-
+  songTitleText: { color: "white", fontSize: 20, fontWeight: "600", textAlign: "center" },
   socialLinkBg: { width: "100%", height: 100, justifyContent: "center", alignItems: "center" },
-  // Increased footer flex from 1 to 1.2 to claim more space at bottom, forcing center section up
   footer: { flex: 1, width: "100%", justifyContent: "center" },
-  socialRow: {
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "space-evenly", // or center
-    alignItems: "center",
-  },
-  socialIcon: {
-    width: 56,
-    height: 56,
-    // borderRadius: 28,
-    // backgroundColor: "#27272a",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  socialIconImage: {
-    width: 36,
-    height: 36,
-  },
+  socialRow: { flexDirection: "row", width: "100%", justifyContent: "space-evenly", alignItems: "center" },
+  socialIcon: { width: 56, height: 56, justifyContent: "center", alignItems: "center" },
+  socialIconImage: { width: 36, height: 36 },
 });
