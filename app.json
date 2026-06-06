@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "polskie-radio",
+    "name": "PpolskieRadio",
     "slug": "polskie-radio",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -36,7 +36,17 @@
         }
       ],
       "expo-audio",
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
