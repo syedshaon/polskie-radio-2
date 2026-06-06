@@ -72,14 +72,14 @@ export default function App() {
         source={require("../assets/bg.jpg")}
         // For local images use: source={require('./assets/bg.png')}
         resizeMode="cover"
-        style={styles.image}
+        style={styles.mainBG}
       >
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View style={styles.container}>
             {/* Top - Logo & Info */}
             <View style={styles.header}>
               <Image source={logoImage} style={styles.logo} resizeMode="contain" />
-              <Text style={styles.subtitle}>Łączyć a nie dzielić</Text>
+              <Text style={styles.title}>Polskie Radio Scotland</Text>
             </View>
 
             {/* Middle - Main Controls & Metadata (Moved Higher) */}
@@ -95,20 +95,37 @@ export default function App() {
                 )}
               </View>
 
-              <TouchableOpacity onPress={togglePlayPause} style={styles.playButton} activeOpacity={0.8}>
-                {isPlaying ? <Pause size={48} color="#18181b" fill="#18181b" /> : <Play size={48} color="#18181b" fill="#18181b" style={{ marginLeft: 6 }} />}
+              <TouchableOpacity onPress={togglePlayPause} activeOpacity={0.8}>
+                <ImageBackground
+                  source={require("../assets/play-bg.png")}
+                  // For local images use: source={require('./assets/bg.png')}
+                  resizeMode="cover"
+                  style={styles.playButtonBg}
+                >
+                  {isPlaying ? <Pause size={60} color="#fff" fill="#fff" /> : <Play size={60} color="#fff" fill="#fff" style={{ marginLeft: 6 }} />}
+                </ImageBackground>
               </TouchableOpacity>
             </View>
 
-            {/* Bottom - Social Media spacing adjusted to look balanced */}
-            <View style={styles.footer}>
-              <View style={styles.socialRow}>
-                {socialLinks.map(({ icon: Icon, label, url }) => (
-                  <TouchableOpacity key={label} onPress={() => Linking.openURL(url)} style={styles.socialIcon}>
-                    <Icon size={24} color="white" />
-                  </TouchableOpacity>
-                ))}
-              </View>
+            <Image source={require("../assets/tune.png")} style={{ width: 80, height: 80, marginTop: 20, marginHorizontal: "auto" }} resizeMode="contain" />
+
+            <View style={{ borderRadius: 20, overflow: "hidden", width: "100%", maxWidth: "100%", alignSelf: "center" }}>
+              <ImageBackground
+                source={require("../assets/footer-bg.png")}
+                // For local images use: source={require('./assets/bg.png')}
+                resizeMode="cover"
+                style={styles.socialLinkBg}
+              >
+                <View style={styles.footer}>
+                  <View style={styles.socialRow}>
+                    {socialLinks.map(({ icon: Icon, label, url }) => (
+                      <TouchableOpacity key={label} onPress={() => Linking.openURL(url)} style={styles.socialIcon}>
+                        <Icon size={24} color="white" />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              </ImageBackground>
             </View>
           </View>
         </ScrollView>
@@ -122,7 +139,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   safeArea: { flex: 1 },
-  container: { flex: 1, paddingHorizontal: 20 },
+  container: { flex: 1 },
+  mainBG: { flex: 1 },
   image: {
     flex: 1,
     justifyContent: "center", // Centers children vertically
@@ -132,7 +150,8 @@ const styles = StyleSheet.create({
   // Decreased header flex size from 2 to 1.5 to push things upward
   header: { flex: 1.5, justifyContent: "center", alignItems: "center", paddingTop: 40 },
   logo: { width: 180, height: 180, marginBottom: 10 },
-  subtitle: { color: "#a1a1aa", fontSize: 18 },
+  title: { color: "#fff", fontSize: 22, fontWeight: "600" },
+  playButtonBg: { width: 120, height: 120, justifyContent: "center", alignItems: "center" },
 
   // Kept flex 1.5 but layout will shift upwards due to overall flex changes
   controls: { flex: 1.5, justifyContent: "flex-start", alignItems: "center", paddingTop: 10 },
@@ -153,23 +172,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
-  playButton: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    backgroundColor: "white",
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-  },
-
+  socialLinkBg: { width: "100%", height: 100, justifyContent: "center", alignItems: "center" },
   // Increased footer flex from 1 to 1.2 to claim more space at bottom, forcing center section up
-  footer: { flex: 1.2, justifyContent: "flex-end", marginBottom: 40 },
-  socialRow: { flexDirection: "row", justifyContent: "center", gap: 20 },
+  footer: { flex: 1, width: "100%", justifyContent: "center" },
+  socialRow: {
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "space-evenly", // or center
+    alignItems: "center",
+  },
   socialIcon: {
     width: 56,
     height: 56,
