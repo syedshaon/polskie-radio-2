@@ -1,9 +1,8 @@
 import { setAudioModeAsync, useAudioPlayer } from "expo-audio";
-// import { Globe, Pause, Play } from "lucide-react-native";
+
 import React, { useEffect, useState } from "react";
 import { Image, ImageBackground, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import TextTicker from "react-native-text-ticker";
-// import { Facebook, Tiktok, Youtube } from "../components/social";
 
 const STREAM_URL = "https://polskieradioscotlandstream.cloud/listen/polskie_radio_scotland_stream/radio.mp3";
 const METADATA_API_URL = "https://polskieradioscotlandstream.cloud/api/nowplaying/polskie_radio_scotland_stream";
@@ -43,10 +42,16 @@ export default function App() {
 
   // useEffect(() => {
   //   async function setupAudio() {
-  //     await setAudioModeAsync({
-  //       playsInSilentMode: true,
-  //       interruptionModeAndroid: "doNotMix",
-  //     });
+  //     try {
+  //       await setAudioModeAsync({
+  //         playsInSilentMode: true,
+  //         interruptionMode: "doNotMix", // Required for Android lock screen integration
+  //         allowsRecording: false,
+  //         shouldPlayInBackground: true,
+  //       });
+  //     } catch (error) {
+  //       console.log("Error configuring Audio Mode:", error);
+  //     }
   //   }
   //   setupAudio();
 
@@ -56,25 +61,34 @@ export default function App() {
   //   return () => clearInterval(interval);
   // }, []);
 
+  // 2. Global Audio Session and Lock Screen binding config
   useEffect(() => {
-    async function setupAudio() {
-      try {
-        await setAudioModeAsync({
-          playsInSilentMode: true,
-          shouldPlayInBackground: true, // This replaces staysActiveInBackground
-          interruptionMode: "duckOthers", // Replaces platform-specific interruption keys
-        });
-      } catch (error) {
-        console.log("Error configuring Audio Mode:", error);
-      }
+    async function configureAudioSession() {
+      await setAudioModeAsync({
+        playsInSilentMode: true,
+        interruptionMode: "doNotMix", // Required on Android to tether lock screen control
+        allowsRecording: false,
+      });
     }
-    setupAudio();
-
-    fetchMetadata();
-
-    const interval = setInterval(fetchMetadata, 15000);
-    return () => clearInterval(interval);
+    configureAudioSession();
   }, []);
+
+  useEffect(() => {
+    if (player) {
+      // Tells Android/iOS that this stream is authorized to play in the background
+      // and binds it to the user's notification/lock-screen drawer.
+      player.setActiveForLockScreen(true, {
+        title: trackInfo.title,
+        artist: trackInfo.artist,
+      });
+    }
+
+    return () => {
+      if (player) {
+        player.clearLockScreenControls();
+      }
+    };
+  }, [player, trackInfo]);
 
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -146,7 +160,7 @@ export default function App() {
 
             <Image source={require("../assets/tune.png")} style={{ width: 80, height: 80, marginTop: 20, marginHorizontal: "auto" }} resizeMode="contain" />
 
-            <View style={{ borderRadius: 20, overflow: "hidden", width: "100%", maxWidth: "100%", alignSelf: "center" }}>
+            <View style={{ borderRadius: 20, overflow: "hidden", width: "100%", maxWidth: "100%", alignSelf: "center", marginBottom: 30 }}>
               <ImageBackground
                 source={require("../assets/footer-bg.png")}
                 // For local images use: source={require('./assets/bg.png')}
