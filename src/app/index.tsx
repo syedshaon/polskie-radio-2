@@ -33,12 +33,32 @@ export default function App() {
     }
   };
 
+  // useEffect(() => {
+  //   async function setupAudio() {
+  //     await setAudioModeAsync({
+  //       playsInSilentMode: true,
+  //       interruptionModeAndroid: "doNotMix",
+  //     });
+  //   }
+  //   setupAudio();
+
+  //   fetchMetadata();
+
+  //   const interval = setInterval(fetchMetadata, 15000);
+  //   return () => clearInterval(interval);
+  // }, []);
+
   useEffect(() => {
     async function setupAudio() {
-      await setAudioModeAsync({
-        playsInSilentMode: true,
-        interruptionModeAndroid: "doNotMix",
-      });
+      try {
+        await setAudioModeAsync({
+          playsInSilentMode: true,
+          shouldPlayInBackground: true, // This replaces staysActiveInBackground
+          interruptionMode: "duckOthers", // Replaces platform-specific interruption keys
+        });
+      } catch (error) {
+        console.log("Error configuring Audio Mode:", error);
+      }
     }
     setupAudio();
 
