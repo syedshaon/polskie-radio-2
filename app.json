@@ -36,18 +36,7 @@
         }
       ],
       "expo-audio",
-      "expo-asset",
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "compileSdkVersion": 35,
-            "targetSdkVersion": 35,
-            "minSdkVersion": 29,
-            "buildToolsVersion": "35.0.0"
-          }
-        }
-      ]
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true,
