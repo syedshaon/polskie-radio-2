@@ -1,13 +1,21 @@
 import { setAudioModeAsync, useAudioPlayer } from "expo-audio";
-import { Globe, Pause, Play } from "lucide-react-native";
+// import { Globe, Pause, Play } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { Image, ImageBackground, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import TextTicker from "react-native-text-ticker";
-import { Facebook, Tiktok, Youtube } from "../components/social";
+// import { Facebook, Tiktok, Youtube } from "../components/social";
 
 const STREAM_URL = "https://polskieradioscotlandstream.cloud/listen/polskie_radio_scotland_stream/radio.mp3";
 const METADATA_API_URL = "https://polskieradioscotlandstream.cloud/api/nowplaying/polskie_radio_scotland_stream";
 const logoImage = require("../assets/logo.png");
+
+const Facebook = require("../assets/facebook.png");
+const Web = require("../assets/web.png");
+const Twitter = require("../assets/twitter.png");
+const Instagram = require("../assets/instagram.png");
+const Share = require("../assets/share.png");
+const Play = require("../assets/play-button.png");
+const Pause = require("../assets/pause.png");
 
 export default function App() {
   const player = useAudioPlayer(STREAM_URL);
@@ -80,10 +88,11 @@ export default function App() {
   };
 
   const socialLinks = [
-    { icon: Facebook, label: "Facebook", url: "https://facebook.com" },
-    { icon: Youtube, label: "Youtube", url: "https://www.youtube.com/@PolskieRadioScotland" },
-    { icon: Tiktok, label: "Tiktok", url: "https://www.tiktok.com/@polskie.radio.scotland" },
-    { icon: Globe, label: "Website", url: "https://www.polskieradioscotland.co.uk/" },
+    { icon: Facebook, label: "Facebook", url: "https://www.facebook.com/profile.php?id=61582724020965" },
+    { icon: Web, label: "Website", url: "https://www.polskieradioscotland.co.uk/" },
+    { icon: Twitter, label: "Tiktok", url: "https://x.com/polskieradiopl?lang=en" },
+    { icon: Instagram, label: "Youtube", url: "https://www.instagram.com/polskieradio/?hl=en" },
+    { icon: Share, label: "Share", url: "https://www.polskieradioscotland.co.uk/" },
   ];
 
   return (
@@ -122,7 +131,15 @@ export default function App() {
                   resizeMode="cover"
                   style={styles.playButtonBg}
                 >
-                  {isPlaying ? <Pause size={60} color="#fff" fill="#fff" /> : <Play size={60} color="#fff" fill="#fff" style={{ marginLeft: 6 }} />}
+                  <Image
+                    source={isPlaying ? Pause : Play}
+                    style={{
+                      width: 60,
+                      height: 60,
+                      marginLeft: isPlaying ? 0 : 6,
+                    }}
+                    resizeMode="contain"
+                  />
                 </ImageBackground>
               </TouchableOpacity>
             </View>
@@ -138,9 +155,9 @@ export default function App() {
               >
                 <View style={styles.footer}>
                   <View style={styles.socialRow}>
-                    {socialLinks.map(({ icon: Icon, label, url }) => (
+                    {socialLinks.map(({ icon, label, url }) => (
                       <TouchableOpacity key={label} onPress={() => Linking.openURL(url)} style={styles.socialIcon}>
-                        <Icon size={24} color="white" />
+                        <Image source={icon} style={styles.socialIconImage} resizeMode="contain" />
                       </TouchableOpacity>
                     ))}
                   </View>
@@ -204,9 +221,13 @@ const styles = StyleSheet.create({
   socialIcon: {
     width: 56,
     height: 56,
-    borderRadius: 28,
-    backgroundColor: "#27272a",
+    // borderRadius: 28,
+    // backgroundColor: "#27272a",
     justifyContent: "center",
     alignItems: "center",
+  },
+  socialIconImage: {
+    width: 36,
+    height: 36,
   },
 });
