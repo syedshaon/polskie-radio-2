@@ -15,9 +15,10 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#010100"
       },
-      "permissions": ["INTERNET"],
       "predictiveBackGestureEnabled": false,
-      "package": "com.syedshaon99.polskieradio"
+      "package": "com.polskieradioscotland.app",
+      "versionCode": 1,
+      "permissions": ["INTERNET", "FOREGROUND_SERVICE", "FOREGROUND_SERVICE_MEDIA_PLAYBACK"]
     },
     "web": {
       "output": "static",
@@ -50,7 +51,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "45753588-46f2-4dea-b65b-62e56bdc8a88"
+        "projectId": "5d6fd87b-d28d-498c-bbdd-d2cca704ce8a"
       }
     },
     "owner": "syedshaon999"
