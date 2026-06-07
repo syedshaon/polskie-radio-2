@@ -1,7 +1,7 @@
 import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 import React, { useEffect, useState } from "react";
 import { Image, ImageBackground, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import TextTicker from "react-native-text-ticker";
+import MarqueeView from "react-native-marquee-view";
 
 const STREAM_URL = "https://polskieradioscotlandstream.cloud/listen/polskie_radio_scotland_stream/radio.mp3";
 const METADATA_API_URL = "https://polskieradioscotlandstream.cloud/api/nowplaying/polskie_radio_scotland_stream";
@@ -17,7 +17,6 @@ const Pause = require("../assets/pause.png");
 
 export default function App() {
   const player = useAudioPlayer(STREAM_URL);
-  // Hook listener cleanly tracks dynamic audio streaming states (playing, buffering, etc.)
   const status = useAudioPlayerStatus(player);
 
   const [trackInfo, setTrackInfo] = useState({
@@ -33,7 +32,6 @@ export default function App() {
       if (data && data.now_playing && data.now_playing.song) {
         setTrackInfo({
           title: data.now_playing.song.title || "Live Stream",
-          // Fixed syntax string formatting bug
           artist: data.now_playing.song.artist ? ` — ${data.now_playing.song.artist}` : "Polskie Radio Scotland",
         });
       }
@@ -42,14 +40,13 @@ export default function App() {
     }
   };
 
-  // 1. Initialize Audio Sessions and Handle Polling Clock Intervals
   useEffect(() => {
     async function configureAudioSession() {
       try {
         await setAudioModeAsync({
           playsInSilentMode: true,
           shouldPlayInBackground: true,
-          interruptionMode: "doNotMix", // Prevents Android system termination hooks
+          interruptionMode: "doNotMix",
           allowsRecording: false,
         });
       } catch (error) {
@@ -63,7 +60,6 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // 2. Bind Active Runtime Stream States with OS Lockscreens
   useEffect(() => {
     if (player) {
       player.setActiveForLockScreen(true, {
@@ -79,7 +75,6 @@ export default function App() {
     };
   }, [status.playing, trackInfo]);
 
-  // 3. Playback State Callbacks
   const togglePlayPause = () => {
     if (status.playing) {
       player.pause();
@@ -111,9 +106,17 @@ export default function App() {
             <View style={styles.controls}>
               <View style={styles.metadataContainer}>
                 {status.playing ? (
-                  <TextTicker style={styles.songTitleText} duration={12000} loop bounce={false} repeatSpacer={100} marqueeDelay={1000}>
-                    {trackInfo.title} {trackInfo.artist}
-                  </TextTicker>
+                  /* MarqueeView auto-scrolls seamlessly without breaking on center text layouts */
+                  <MarqueeView
+                    key={`${trackInfo.title}-${trackInfo.artist}`}
+                    speed={0.1} // Adjust speed factor (lower values are smoother, standard is around 0.1)
+                    style={styles.marqueeWrapper}
+                  >
+                    <Text style={styles.songTitleText}>
+                      {trackInfo.title}
+                      {trackInfo.artist}
+                    </Text>
+                  </MarqueeView>
                 ) : (
                   <Text style={styles.songTitleText}>Stream Paused</Text>
                 )}
@@ -168,14 +171,21 @@ const styles = StyleSheet.create({
   controls: { flex: 1.5, justifyContent: "flex-start", alignItems: "center", paddingTop: 10 },
   metadataContainer: {
     alignItems: "center",
-    marginBottom: 25,
-    width: "55%",
-    height: 30,
-    paddingHorizontal: 10,
-    overflow: "hidden",
     justifyContent: "center",
+    marginBottom: 25,
+    width: "50%",
+    height: 30,
+    overflow: "hidden",
+    alignSelf: "center",
   },
-  songTitleText: { color: "white", fontSize: 20, fontWeight: "600", textAlign: "center" },
+  marqueeWrapper: {
+    width: "100%",
+  },
+  songTitleText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "600",
+  },
   socialLinkBg: { width: "100%", height: 100, justifyContent: "center", alignItems: "center" },
   footer: { flex: 1, width: "100%", justifyContent: "center" },
   socialRow: { flexDirection: "row", width: "100%", justifyContent: "space-evenly", alignItems: "center" },

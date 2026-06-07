@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "PpolskieRadio",
-    "slug": "polskie-radio",
+    "name": "Polskie Radio Scotland",
+    "slug": "polskie-radio-scotland",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -50,9 +50,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "6bc2c16a-f81a-422a-ae64-cefebe677287"
+        "projectId": "45753588-46f2-4dea-b65b-62e56bdc8a88"
       }
     },
-    "owner": "syedshaon99"
+    "owner": "syedshaon999"
   }
 }
