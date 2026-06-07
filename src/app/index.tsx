@@ -2,6 +2,7 @@ import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from "expo-au
 import React, { useEffect, useState } from "react";
 import { Image, ImageBackground, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MarqueeView from "react-native-marquee-view";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const STREAM_URL = "https://polskieradioscotlandstream.cloud/listen/polskie_radio_scotland_stream/radio.mp3";
 const METADATA_API_URL = "https://polskieradioscotlandstream.cloud/api/nowplaying/polskie_radio_scotland_stream";
@@ -94,67 +95,69 @@ export default function App() {
   return (
     <View style={styles.parentContainer}>
       <ImageBackground source={require("../assets/bg.jpg")} resizeMode="cover" style={styles.mainBG}>
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          <View style={styles.container}>
-            {/* Top - Logo & Info */}
-            <View style={styles.header}>
-              <Image source={logoImage} style={styles.logo} resizeMode="contain" />
-              <Text style={styles.title}>Polskie Radio Scotland</Text>
-            </View>
-
-            {/* Middle - Controls & Metadata */}
-            <View style={styles.controls}>
-              <View style={styles.metadataContainer}>
-                {status.playing ? (
-                  /* MarqueeView auto-scrolls seamlessly without breaking on center text layouts */
-                  <MarqueeView
-                    key={`${trackInfo.title}-${trackInfo.artist}`}
-                    speed={0.1} // Adjust speed factor (lower values are smoother, standard is around 0.1)
-                    style={styles.marqueeWrapper}
-                  >
-                    <Text style={styles.songTitleText}>
-                      {trackInfo.title}
-                      {trackInfo.artist}
-                    </Text>
-                  </MarqueeView>
-                ) : (
-                  <Text style={styles.songTitleText}>Stream Paused</Text>
-                )}
+        <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <View style={styles.container}>
+              {/* Top - Logo & Info */}
+              <View style={styles.header}>
+                <Image source={logoImage} style={styles.logo} resizeMode="contain" />
+                <Text style={styles.title}>Polskie Radio Scotland</Text>
               </View>
 
-              <TouchableOpacity onPress={togglePlayPause} activeOpacity={0.8}>
-                <ImageBackground source={require("../assets/play-bg.png")} resizeMode="cover" style={styles.playButtonBg}>
-                  <Image
-                    source={status.playing ? Pause : Play}
-                    style={{
-                      width: 60,
-                      height: 60,
-                      marginLeft: status.playing ? 0 : 6,
-                    }}
-                    resizeMode="contain"
-                  />
-                </ImageBackground>
-              </TouchableOpacity>
-            </View>
-
-            <Image source={require("../assets/tune.png")} style={{ width: 80, height: 80, marginTop: 20, marginHorizontal: "auto" }} resizeMode="contain" />
-
-            {/* Footer - Social Media Connections */}
-            <View style={{ borderRadius: 20, overflow: "hidden", width: "100%", maxWidth: "100%", alignSelf: "center", marginBottom: 30 }}>
-              <ImageBackground source={require("../assets/footer-bg.png")} resizeMode="cover" style={styles.socialLinkBg}>
-                <View style={styles.footer}>
-                  <View style={styles.socialRow}>
-                    {socialLinks.map(({ icon, label, url }) => (
-                      <TouchableOpacity key={label} onPress={() => Linking.openURL(url)} style={styles.socialIcon}>
-                        <Image source={icon} style={styles.socialIconImage} resizeMode="contain" />
-                      </TouchableOpacity>
-                    ))}
-                  </View>
+              {/* Middle - Controls & Metadata */}
+              <View style={styles.controls}>
+                <View style={styles.metadataContainer}>
+                  {status.playing ? (
+                    /* MarqueeView auto-scrolls seamlessly without breaking on center text layouts */
+                    <MarqueeView
+                      key={`${trackInfo.title}-${trackInfo.artist}`}
+                      speed={0.1} // Adjust speed factor (lower values are smoother, standard is around 0.1)
+                      style={styles.marqueeWrapper}
+                    >
+                      <Text style={styles.songTitleText}>
+                        {trackInfo.title}
+                        {trackInfo.artist}
+                      </Text>
+                    </MarqueeView>
+                  ) : (
+                    <Text style={styles.songTitleText}>Stream Paused</Text>
+                  )}
                 </View>
-              </ImageBackground>
+
+                <TouchableOpacity onPress={togglePlayPause} activeOpacity={0.8}>
+                  <ImageBackground source={require("../assets/play-bg.png")} resizeMode="cover" style={styles.playButtonBg}>
+                    <Image
+                      source={status.playing ? Pause : Play}
+                      style={{
+                        width: 60,
+                        height: 60,
+                        marginLeft: status.playing ? 0 : 6,
+                      }}
+                      resizeMode="contain"
+                    />
+                  </ImageBackground>
+                </TouchableOpacity>
+              </View>
+
+              <Image source={require("../assets/tune.png")} style={{ width: 80, height: 80, marginTop: 20, marginHorizontal: "auto" }} resizeMode="contain" />
+
+              {/* Footer - Social Media Connections */}
+              <View style={{ borderRadius: 20, overflow: "hidden", width: "100%", maxWidth: "100%", alignSelf: "center", marginBottom: 30 }}>
+                <ImageBackground source={require("../assets/footer-bg.png")} resizeMode="cover" style={styles.socialLinkBg}>
+                  <View style={styles.footer}>
+                    <View style={styles.socialRow}>
+                      {socialLinks.map(({ icon, label, url }) => (
+                        <TouchableOpacity key={label} onPress={() => Linking.openURL(url)} style={styles.socialIcon}>
+                          <Image source={icon} style={styles.socialIconImage} resizeMode="contain" />
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+                </ImageBackground>
+              </View>
             </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        </SafeAreaView>
       </ImageBackground>
     </View>
   );
@@ -173,7 +176,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 25,
-    width: "50%",
+    width: "70%",
     height: 30,
     overflow: "hidden",
     alignSelf: "center",
