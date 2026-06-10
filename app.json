@@ -2,7 +2,7 @@
   "expo": {
     "name": "Polskie Radio Scotland",
     "slug": "polskie-radio-scotland",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "polskieradio",
@@ -17,7 +17,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.polskieradioscotland.app",
-      "versionCode": 2,
+      "versionCode": 3,
       "permissions": ["INTERNET", "FOREGROUND_SERVICE", "FOREGROUND_SERVICE_MEDIA_PLAYBACK"]
     },
     "web": {
