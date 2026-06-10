@@ -12,7 +12,7 @@ const Facebook = require("../assets/facebook.png");
 const Web = require("../assets/web.png");
 const Twitter = require("../assets/twitter.png");
 const Instagram = require("../assets/instagram.png");
-const Share = require("../assets/share.png");
+const Tiktok = require("../assets/tiktok.png");
 const Play = require("../assets/play-button.png");
 const Pause = require("../assets/pause.png");
 
@@ -87,9 +87,9 @@ export default function App() {
   const socialLinks = [
     { icon: Facebook, label: "Facebook", url: "https://www.facebook.com/profile.php?id=61582724020965" },
     { icon: Web, label: "Website", url: "https://www.polskieradioscotland.co.uk/" },
-    { icon: Twitter, label: "Tiktok", url: "https://x.com/polskieradiopl?lang=en" },
-    { icon: Instagram, label: "Youtube", url: "https://www.instagram.com/polskieradio/?hl=en" },
-    { icon: Share, label: "Share", url: "https://www.polskieradioscotland.co.uk/" },
+    { icon: Twitter, label: "Twitter", url: "https://x.com/polskieradiopl?lang=en" },
+    { icon: Instagram, label: "Instagram", url: "https://www.instagram.com/polskieradio/?hl=en" },
+    { icon: Tiktok, label: "Tiktok", url: "https://www.tiktok.com/@polskie.radio.scotland" },
   ];
 
   return (
