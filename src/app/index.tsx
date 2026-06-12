@@ -137,7 +137,7 @@ export default function App() {
               </TouchableOpacity>
             </View>
 
-            <Image source={require("../assets/tune.png")} style={{ width: 80, height: 80, marginTop: 20, marginHorizontal: "auto" }} resizeMode="contain" />
+            {/* <Image source={require("../assets/tune.png")} style={{ width: 80, height: 80, marginTop: 20, marginHorizontal: "auto" }} resizeMode="contain" /> */}
 
             {/* Footer - Social Media Connections */}
             <View style={{ borderRadius: 20, overflow: "hidden", width: "100%", maxWidth: "100%", alignSelf: "center", marginBottom: 30 }}>
@@ -162,19 +162,19 @@ export default function App() {
 
 const styles = StyleSheet.create({
   parentContainer: { flex: 1 },
-  container: { flex: 1 },
+  container: { flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "space-between" },
   mainBG: { flex: 1 },
-  header: { flex: 1.5, justifyContent: "center", alignItems: "center", paddingTop: 40 },
+  header: { flex: 1.5, justifyContent: "center", alignItems: "center", paddingTop: 20, paddingBottom: 30 },
   logo: { width: 180, height: 180, marginBottom: 10 },
   title: { color: "#fff", fontSize: 22, fontWeight: "600" },
   playButtonBg: { width: 120, height: 120, justifyContent: "center", alignItems: "center" },
-  controls: { flex: 1.5, justifyContent: "flex-start", alignItems: "center", paddingTop: 10 },
+  controls: { flex: 1.5, justifyContent: "flex-end", alignItems: "center", paddingBottom: 50 },
   metadataContainer: {
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 25,
-    width: "70%",
-    height: 30,
+    width: "90%",
+    height: "auto",
     overflow: "hidden",
     alignSelf: "center",
   },
