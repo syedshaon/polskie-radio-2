@@ -139,7 +139,7 @@ export default function App() {
                 </TouchableOpacity>
               </View>
 
-              <Image source={require("../assets/tune.png")} style={{ width: 80, height: 80, marginTop: 20, marginHorizontal: "auto" }} resizeMode="contain" />
+              {/* <Image source={require("../assets/tune.png")} style={{ width: 80, height: 80, marginTop: 20, marginHorizontal: "auto" }} resizeMode="contain" /> */}
 
               {/* Footer - Social Media Connections */}
               <View style={{ borderRadius: 20, overflow: "hidden", width: "100%", maxWidth: "100%", alignSelf: "center", marginBottom: 30 }}>
