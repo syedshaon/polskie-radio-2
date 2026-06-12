@@ -2,7 +2,6 @@ import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from "expo-au
 import React, { useEffect, useState } from "react";
 import { Image, ImageBackground, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MarqueeView from "react-native-marquee-view";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const STREAM_URL = "https://polskieradioscotlandstream.cloud/listen/polskie_radio_scotland_stream/radio.mp3";
 const METADATA_API_URL = "https://polskieradioscotlandstream.cloud/api/nowplaying/polskie_radio_scotland_stream";
@@ -95,69 +94,67 @@ export default function App() {
   return (
     <View style={styles.parentContainer}>
       <ImageBackground source={require("../assets/bg.jpg")} resizeMode="cover" style={styles.mainBG}>
-        <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-            <View style={styles.container}>
-              {/* Top - Logo & Info */}
-              <View style={styles.header}>
-                <Image source={logoImage} style={styles.logo} resizeMode="contain" />
-                <Text style={styles.title}>Polskie Radio Scotland</Text>
-              </View>
-
-              {/* Middle - Controls & Metadata */}
-              <View style={styles.controls}>
-                <View style={styles.metadataContainer}>
-                  {status.playing ? (
-                    /* MarqueeView auto-scrolls seamlessly without breaking on center text layouts */
-                    <MarqueeView
-                      key={`${trackInfo.title}-${trackInfo.artist}`}
-                      speed={0.1} // Adjust speed factor (lower values are smoother, standard is around 0.1)
-                      style={styles.marqueeWrapper}
-                    >
-                      <Text style={styles.songTitleText}>
-                        {trackInfo.title}
-                        {trackInfo.artist}
-                      </Text>
-                    </MarqueeView>
-                  ) : (
-                    <Text style={styles.songTitleText}>Stream Paused</Text>
-                  )}
-                </View>
-
-                <TouchableOpacity onPress={togglePlayPause} activeOpacity={0.8}>
-                  <ImageBackground source={require("../assets/play-bg.png")} resizeMode="cover" style={styles.playButtonBg}>
-                    <Image
-                      source={status.playing ? Pause : Play}
-                      style={{
-                        width: 60,
-                        height: 60,
-                        marginLeft: status.playing ? 0 : 6,
-                      }}
-                      resizeMode="contain"
-                    />
-                  </ImageBackground>
-                </TouchableOpacity>
-              </View>
-
-              {/* <Image source={require("../assets/tune.png")} style={{ width: 80, height: 80, marginTop: 20, marginHorizontal: "auto" }} resizeMode="contain" /> */}
-
-              {/* Footer - Social Media Connections */}
-              <View style={{ borderRadius: 20, overflow: "hidden", width: "100%", maxWidth: "100%", alignSelf: "center", marginBottom: 30 }}>
-                <ImageBackground source={require("../assets/footer-bg.png")} resizeMode="cover" style={styles.socialLinkBg}>
-                  <View style={styles.footer}>
-                    <View style={styles.socialRow}>
-                      {socialLinks.map(({ icon, label, url }) => (
-                        <TouchableOpacity key={label} onPress={() => Linking.openURL(url)} style={styles.socialIcon}>
-                          <Image source={icon} style={styles.socialIconImage} resizeMode="contain" />
-                        </TouchableOpacity>
-                      ))}
-                    </View>
-                  </View>
-                </ImageBackground>
-              </View>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <View style={styles.container}>
+            {/* Top - Logo & Info */}
+            <View style={styles.header}>
+              <Image source={logoImage} style={styles.logo} resizeMode="contain" />
+              <Text style={styles.title}>Polskie Radio Scotland</Text>
             </View>
-          </ScrollView>
-        </SafeAreaView>
+
+            {/* Middle - Controls & Metadata */}
+            <View style={styles.controls}>
+              <View style={styles.metadataContainer}>
+                {status.playing ? (
+                  /* MarqueeView auto-scrolls seamlessly without breaking on center text layouts */
+                  <MarqueeView
+                    key={`${trackInfo.title}-${trackInfo.artist}`}
+                    speed={0.1} // Adjust speed factor (lower values are smoother, standard is around 0.1)
+                    style={styles.marqueeWrapper}
+                  >
+                    <Text style={styles.songTitleText}>
+                      {trackInfo.title}
+                      {trackInfo.artist}
+                    </Text>
+                  </MarqueeView>
+                ) : (
+                  <Text style={styles.songTitleText}>Stream Paused</Text>
+                )}
+              </View>
+
+              <TouchableOpacity onPress={togglePlayPause} activeOpacity={0.8}>
+                <ImageBackground source={require("../assets/play-bg.png")} resizeMode="cover" style={styles.playButtonBg}>
+                  <Image
+                    source={status.playing ? Pause : Play}
+                    style={{
+                      width: 60,
+                      height: 60,
+                      marginLeft: status.playing ? 0 : 6,
+                    }}
+                    resizeMode="contain"
+                  />
+                </ImageBackground>
+              </TouchableOpacity>
+            </View>
+
+            {/* <Image source={require("../assets/tune.png")} style={{ width: 80, height: 80, marginTop: 20, marginHorizontal: "auto" }} resizeMode="contain" /> */}
+
+            {/* Footer - Social Media Connections */}
+            <View style={{ borderRadius: 20, overflow: "hidden", width: "100%", maxWidth: "100%", alignSelf: "center", marginBottom: 30 }}>
+              <ImageBackground source={require("../assets/footer-bg.png")} resizeMode="cover" style={styles.socialLinkBg}>
+                <View style={styles.footer}>
+                  <View style={styles.socialRow}>
+                    {socialLinks.map(({ icon, label, url }) => (
+                      <TouchableOpacity key={label} onPress={() => Linking.openURL(url)} style={styles.socialIcon}>
+                        <Image source={icon} style={styles.socialIconImage} resizeMode="contain" />
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+              </ImageBackground>
+            </View>
+          </View>
+        </ScrollView>
       </ImageBackground>
     </View>
   );
@@ -165,19 +162,19 @@ export default function App() {
 
 const styles = StyleSheet.create({
   parentContainer: { flex: 1 },
-  container: { flex: 1 },
+  container: { flex: 1, flexDirection: "column", alignItems: "center", justifyContent: "space-between" },
   mainBG: { flex: 1 },
-  header: { flex: 1.5, justifyContent: "center", alignItems: "center", paddingTop: 40 },
+  header: { flex: 1.5, justifyContent: "center", alignItems: "center", paddingTop: 20, paddingBottom: 30 },
   logo: { width: 180, height: 180, marginBottom: 10 },
   title: { color: "#fff", fontSize: 22, fontWeight: "600" },
   playButtonBg: { width: 120, height: 120, justifyContent: "center", alignItems: "center" },
-  controls: { flex: 1.5, justifyContent: "flex-start", alignItems: "center", paddingTop: 10 },
+  controls: { flex: 1.5, justifyContent: "flex-end", alignItems: "center", paddingBottom: 50 },
   metadataContainer: {
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 25,
-    width: "70%",
-    height: 30,
+    width: "90%",
+    height: "auto",
     overflow: "hidden",
     alignSelf: "center",
   },

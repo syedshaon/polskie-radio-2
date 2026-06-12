@@ -2,15 +2,15 @@
   "expo": {
     "name": "Polskie Radio Scotland",
     "slug": "polskie-radio-scotland",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "polskieradio",
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/images/icon.png",
-      "bundleIdentifier": "com.polskieradioscotland.app",
-      "buildNumber": "1.0.0",
+      "bundleIdentifier": "com.polskieradioscotland.radioapp",
+      "buildNumber": "1.0.1",
       "supportsTablet": true,
       "infoPlist": {
         "UIBackgroundModes": ["audio"]
